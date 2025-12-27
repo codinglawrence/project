@@ -66,6 +66,7 @@ pip install -r requirements.txt
 ### 1. 查找UP主的mid
 
 从UP主主页URL中提取mid，例如：
+
 - UP主主页URL：`https://space.bilibili.com/123456`
 - mid就是：`123456`
 
@@ -92,7 +93,7 @@ python main.py
 
 | 视频标题 | 视频链接 | 发布时间 | 核心观点 |
 |---------|---------|---------|---------|
-| Python入门教程 | https://www.bilibili.com/video/BV1xx411c7mZ | 2023-10-01 12:00:00 | 核心观点1：Python是一种简单易学的编程语言... |
+| Python入门教程 | <https://www.bilibili.com/video/BV1xx411c7mZ> | 2023-10-01 12:00:00 | 核心观点1：Python是一种简单易学的编程语言... |
 
 ### Markdown格式
 
@@ -135,16 +136,16 @@ python main.py
 ## 常见问题
 
 ### Q: 程序运行时报错：`No module named 'bilibili_api'`
+
 A: 请确保已安装所有依赖：`pip install -r requirements.txt`
 
 ### Q: 无法获取视频字幕
+
 A: 部分视频需要登录才能获取字幕，程序会自动跳过并尝试使用其他方式
 
 ### Q: 大模型API调用失败
-A: 请检查API Key是否正确，以及网络连接是否正常
 
-### Q: 结果文件在哪里？
-A: 结果保存在`results`目录下，文件名和格式可在`config.py`中配置
+A: 请检查API Key是否正确，以及网络连接是否正常
 
 ## 扩展功能
 
@@ -160,12 +161,9 @@ A: 结果保存在`results`目录下，文件名和格式可在`config.py`中配
 
 欢迎提交Issue和Pull Request，帮助改进本工具！
 
-## 许可证
-
-MIT License
-
 ## 联系方式
 
 如有问题或建议，欢迎通过以下方式联系：
-- GitHub Issues: [https://github.com/yourusername/bilibili-up-core-views/issues](https://github.com/yourusername/bilibili-up-core-views/issues)
-- Email: your.email@example.com
+
+- GitHub Issues: [https://github.com/codinglawrence/project/issues]
+- Email: <a1438574@qq.com>

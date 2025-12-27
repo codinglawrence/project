@@ -1,7 +1,3 @@
-# 配置文件
-
-# B站UP主信息
-UP_MID = 1411721850  # 替换为目标UP主的mid（用户ID）
 
 # 大模型API配置
 MODEL_TYPE = "deepseek"  # 可选值: "openai"、"deepseek" 或 "siliconflow"
