@@ -1,0 +1,8 @@
+提醒：
+请先在config.py文件中设置你的硅基流动API密钥：
+
+SILICONFLOW_API_KEY = "your-siliconflow-api-key"  # 替换为你的硅基流动API Key
+
+你可以在硅基流动官网获取API密钥：https://www.siliconflow.cn/
+
+设置完成后，运行：python main.py 开始提取视频核心观点。
