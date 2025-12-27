@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B站UP主视频核心观点提取工具</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <!-- 标题区域 -->
+        <header class="header">
+            <div class="logo">
+                <i class="fa fa-play-circle"></i>
+                <h1>UP主核心观点提取器</h1>
+            </div>
+            <p class="subtitle">输入UP主UID，一键获取视频核心观点</p>
+        </header>
+
+        <!-- 输入区域 -->
+        <section class="input-section">
+            <div class="input-container">
+                <div class="input-group">
+                    <label for="uid"><i class="fa fa-user-circle"></i> UP主UID</label>
+                    <input type="text" id="uid" placeholder="请输入UP主UID，例如：1411721850" required>
+                </div>
+                <div class="input-group">
+                    <label for="max-videos"><i class="fa fa-film"></i> 最大视频数</label>
+                    <input type="number" id="max-videos" placeholder="请输入要处理的最大视频数" value="10" min="1" max="50">
+                </div>
+                <div class="input-group">
+                    <label for="model-type"><i class="fa fa-brain"></i> 模型类型</label>
+                    <select id="model-type">
+                        <option value="deepseek">DeepSeek</option>
+                        <option value="siliconflow">硅基流动</option>
+                    </select>
+                </div>
+            </div>
+            <button id="extract-btn" class="btn btn-primary">
+                <i class="fa fa-magic"></i> 开始提取
+            </button>
+        </section>
+
+        <!-- 状态区域 -->
+        <section class="status-section" id="status-section" style="display: none;">
+            <div class="status">
+                <div class="spinner"></div>
+                <p id="status-text">正在获取视频列表...</p>
+            </div>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </section>
+
+        <!-- 结果展示区域 -->
+        <section class="results-section" id="results-section" style="display: none;">
+            <div class="results-header">
+                <h2 id="results-title">提取结果</h2>
+                <div class="results-actions">
+                    <button id="save-btn" class="btn btn-secondary">
+                        <i class="fa fa-save"></i> 保存到本地
+                    </button>
+                    <button id="clear-btn" class="btn btn-secondary">
+                        <i class="fa fa-trash"></i> 清除结果
+                    </button>
+                </div>
+            </div>
+
+            <!-- 整体总结区域 -->
+            <div class="overall-summary" id="overall-summary" style="display: none;">
+                <h3>📋 整体总结</h3>
+                <div class="summary-content" id="summary-content"></div>
+            </div>
+
+            <!-- 智能问答区域 -->
+            <div class="ai-chat-section" id="ai-chat-section" style="display: none;">
+                <h3>🤖 智能问答</h3>
+                <div class="chat-container">
+                    <div class="chat-messages" id="chat-messages"></div>
+                    <div class="chat-input-area">
+                        <input type="text" id="question-input" placeholder="请输入您的问题..." autocomplete="off">
+                        <button id="ask-btn" class="btn btn-primary">
+                            <i class="fa fa-paper-plane"></i> 提问
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 视频结果网格 -->
+            <div class="results-grid" id="results-grid"></div>
+        </section>
+
+        <!-- 历史记录区域 -->
+        <section class="history-section">
+            <h2>历史记录</h2>
+            <div class="history-list" id="history-list"></div>
+        </section>
+    </div>
+
+    <!-- 配置模态框 -->
+    <div class="modal" id="config-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>API配置</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="config-group">
+                    <label for="deepseek-api-key">DeepSeek API Key</label>
+                    <input type="password" id="deepseek-api-key" placeholder="请输入DeepSeek API Key">
+                </div>
+                <div class="config-group">
+                    <label for="siliconflow-api-key">硅基流动 API Key</label>
+                    <input type="password" id="siliconflow-api-key" placeholder="请输入硅基流动 API Key">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save-config-btn" class="btn btn-primary">保存配置</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
