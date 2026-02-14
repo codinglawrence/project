@@ -7,7 +7,7 @@ OPENAI_API_KEY = "your-openai-api-key"  # 替换为你的OpenAI API Key
 OPENAI_MODEL = "gpt-3.5-turbo"  # OpenAI模型名称
 
 # DeepSeek API配置
-DEEPSEEK_API_KEY = ""  # 替换为你的DeepSeek API Key
+DEEPSEEK_API_KEY = "YOUR_DEEPSEEK_API_KEY"  # 替换为你的DeepSeek API Key
 DEEPSEEK_MODEL = "deepseek-chat"  # DeepSeek聊天模型
 
 # 硅基流动API配置

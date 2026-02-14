@@ -20,8 +20,13 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from main import BilibiliUpCrawler
 from config import *
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder='.')
 CORS(app)  # 允许跨域请求
+
+@app.route('/')
+def index():
+    """首页"""
+    return app.send_static_file('index.html')
 
 @app.route('/api/extract', methods=['POST'])
 def extract_core_views():
