@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 B站UP主视频核心观点自动提炼工具
@@ -36,12 +36,21 @@ def ensure_directory(path):
 class BilibiliUpCrawler:
     """B站UP主视频爬虫类"""
     
-    def __init__(self, up_mid, max_videos=MAX_VIDEOS):
+    def __init__(self, up_mid, max_videos=MAX_VIDEOS, model_type=None, api_keys=None):
         self.up_mid = up_mid
         self.max_videos = max_videos
         self.videos = []
         self.results = []
-        
+
+        # 模型配置：优先使用传入参数，否则回退到 config.py 全局变量
+        self.model_type = model_type if model_type else MODEL_TYPE
+        self.openai_api_key = OPENAI_API_KEY
+        self.openai_model = OPENAI_MODEL
+        self.deepseek_api_key = (api_keys or {}).get("deepseek", DEEPSEEK_API_KEY)
+        self.deepseek_model = DEEPSEEK_MODEL
+        self.siliconflow_api_key = (api_keys or {}).get("siliconflow", SILICONFLOW_API_KEY)
+        self.siliconflow_model = SILICONFLOW_MODEL
+
         # 初始化大模型客户端
         self.model_client = self._init_model_client()
         
@@ -53,22 +62,21 @@ class BilibiliUpCrawler:
         if not OPENAI_AVAILABLE:
             print("警告：OpenAI库未安装，请先安装：pip install openai")
             return None
-        
-        # 简化模型初始化，只保留核心模型
+
         model_configs = {
-            "openai": {"api_key": OPENAI_API_KEY, "base_url": None},
-            "deepseek": {"api_key": DEEPSEEK_API_KEY, "base_url": "https://api.deepseek.com/v1"},
-            "siliconflow": {"api_key": SILICONFLOW_API_KEY, "base_url": "https://api.siliconflow.cn/v1"}
+            "openai":     {"api_key": self.openai_api_key,     "base_url": None},
+            "deepseek":   {"api_key": self.deepseek_api_key,   "base_url": "https://api.deepseek.com/v1"},
+            "siliconflow":{"api_key": self.siliconflow_api_key,"base_url": "https://api.siliconflow.cn/v1"}
         }
-        
-        if MODEL_TYPE in model_configs:
-            config = model_configs[MODEL_TYPE]
+
+        if self.model_type in model_configs:
+            config = model_configs[self.model_type]
             if config["base_url"]:
                 return OpenAI(api_key=config["api_key"], base_url=config["base_url"])
             else:
                 return OpenAI(api_key=config["api_key"])
         else:
-            print(f"警告：不支持的模型类型：{MODEL_TYPE}")
+            print(f"警告：不支持的模型类型：{self.model_type}")
             return None
     
     def get_up_videos(self):
@@ -293,11 +301,11 @@ class BilibiliUpCrawler:
             """
             
             # 根据模型类型选择正确的模型名称
-            model_name = OPENAI_MODEL
-            if MODEL_TYPE == "deepseek":
-                model_name = DEEPSEEK_MODEL
-            elif MODEL_TYPE == "siliconflow":
-                model_name = SILICONFLOW_MODEL
+            model_name = self.openai_model
+            if self.model_type == "deepseek":
+                model_name = self.deepseek_model
+            elif self.model_type == "siliconflow":
+                model_name = self.siliconflow_model
             
             # 调用模型API（所有模型使用统一的OpenAI兼容接口）
             response = self.model_client.chat.completions.create(
@@ -314,12 +322,12 @@ class BilibiliUpCrawler:
             
             # 提供更详细的错误说明
             if "Authentication Fails" in error_msg or "invalid" in error_msg.lower() or "401" in error_msg:
-                if MODEL_TYPE == "siliconflow":
+                if self.model_type == "siliconflow":
                     return f"核心观点提取失败：API密钥无效，请检查config.py中的SILICONFLOW_API_KEY设置是否正确"
-                elif MODEL_TYPE == "deepseek":
+                elif self.model_type == "deepseek":
                     return f"核心观点提取失败：API密钥无效，请检查config.py中的DEEPSEEK_API_KEY设置是否正确"
                 else:
-                    return f"核心观点提取失败：API密钥无效，请检查config.py中的{MODEL_TYPE.upper()}_API_KEY设置是否正确"
+                    return f"核心观点提取失败：API密钥无效，请检查config.py中的{self.model_type.upper()}_API_KEY设置是否正确"
             elif "Insufficient Balance" in error_msg:
                 return f"核心观点提取失败：API余额不足，请充值或更换API密钥"
             elif "rate limit" in error_msg.lower() or "Too Many Requests" in error_msg:
@@ -390,11 +398,11 @@ class BilibiliUpCrawler:
             """
             
             # 根据模型类型选择正确的模型名称
-            model_name = OPENAI_MODEL
-            if MODEL_TYPE == "deepseek":
-                model_name = DEEPSEEK_MODEL
-            elif MODEL_TYPE == "siliconflow":
-                model_name = SILICONFLOW_MODEL
+            model_name = self.openai_model
+            if self.model_type == "deepseek":
+                model_name = self.deepseek_model
+            elif self.model_type == "siliconflow":
+                model_name = self.siliconflow_model
             
             # 调用模型API
             response = self.model_client.chat.completions.create(
@@ -436,11 +444,11 @@ class BilibiliUpCrawler:
             """
             
             # 根据模型类型选择正确的模型名称
-            model_name = OPENAI_MODEL
-            if MODEL_TYPE == "deepseek":
-                model_name = DEEPSEEK_MODEL
-            elif MODEL_TYPE == "siliconflow":
-                model_name = SILICONFLOW_MODEL
+            model_name = self.openai_model
+            if self.model_type == "deepseek":
+                model_name = self.deepseek_model
+            elif self.model_type == "siliconflow":
+                model_name = self.siliconflow_model
             
             # 调用模型API
             response = self.model_client.chat.completions.create(
@@ -455,6 +463,28 @@ class BilibiliUpCrawler:
             print(f"回答问题失败：{e}")
             return f"回答问题失败：{str(e)[:50]}"
     
+    def _call_model(self, prompt):
+        """通用模型调用方法，供内部和外部使用"""
+        try:
+            model_name = self.openai_model
+            if self.model_type == "deepseek":
+                model_name = self.deepseek_model
+            elif self.model_type == "siliconflow":
+                model_name = self.siliconflow_model
+
+            response = self.model_client.chat.completions.create(
+                model=model_name,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=TEMPERATURE,
+                max_tokens=MAX_TOKENS
+            )
+            return response.choices[0].message.content.strip()
+
+        except Exception as e:
+            print(f"模型调用失败：{e}")
+            return f"模型调用失败：{str(e)[:100]}"
+
+
     def process_all_videos(self):
         """处理所有视频"""
         if not self.videos:

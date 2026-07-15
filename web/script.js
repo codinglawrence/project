@@ -1,4 +1,4 @@
-// B站UP主视频核心观点提取工具 - 前端脚本
+﻿// B站UP主视频核心观点提取工具 - 前端脚本
 
 // DOM元素
 const uidInput = document.getElementById('uid');
@@ -383,10 +383,10 @@ function handleSave() {
     // 获取结果数据
     const data = Array.from(results).map(card => {
         const title = card.querySelector('h3').textContent;
-        const meta = card.querySelector('.result-meta');
+        const meta = card.querySelector('.result-meta-info');
         const date = meta.querySelector('span:first-child').textContent.replace('📅 ', '');
         const link = meta.querySelector('a').href;
-        const coreViews = card.querySelector('.core-views').innerHTML;
+        const coreViews = card.querySelector('.core-views-full').innerHTML;
 
         return {
             视频标题: title,

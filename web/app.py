@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 B站UP主视频核心观点提取工具 - 后端服务
@@ -21,7 +21,7 @@ from main import BilibiliUpCrawler
 from config import *
 
 app = Flask(__name__, static_url_path='', static_folder='.')
-CORS(app)  # 允许跨域请求
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://localhost:5000", "http://127.0.0.1:3000", "http://127.0.0.1:5000"]}})  # 跨域白名单
 
 @app.route('/')
 def index():
@@ -32,37 +32,33 @@ def index():
 def extract_core_views():
     """提取UP主视频核心观点"""
     try:
-        # 声明全局变量
-        global MODEL_TYPE, DEEPSEEK_API_KEY, SILICONFLOW_API_KEY
-        
         # 获取请求参数
         data = request.json
         uid = data.get('uid')
         max_videos = data.get('max_videos', MAX_VIDEOS)
         model_type = data.get('model_type', MODEL_TYPE)
         api_keys = data.get('api_keys', {})
-        
+
         if not uid:
             return jsonify({
                 'success': False,
                 'message': '缺少必填参数：uid'
             }), 400
-        
-        # 更新配置
-        original_model_type = MODEL_TYPE
-        original_deepseek_key = DEEPSEEK_API_KEY
-        original_siliconflow_key = SILICONFLOW_API_KEY
-        
-        MODEL_TYPE = model_type
-        
-        # 更新API密钥（如果提供了）
-        if api_keys.get('deepseek'):
-            DEEPSEEK_API_KEY = api_keys.get('deepseek')
-        if api_keys.get('siliconflow'):
-            SILICONFLOW_API_KEY = api_keys.get('siliconflow')
-        
-        # 初始化爬虫
-        crawler = BilibiliUpCrawler(uid, max_videos)
+
+        if not isinstance(uid, str) or not uid.strip().isdigit():
+            return jsonify({
+                'success': False,
+                'message': 'UID 必须是纯数字'
+            }), 400
+
+        if not isinstance(max_videos, int) or max_videos < 1 or max_videos > 200:
+            return jsonify({
+                'success': False,
+                'message': 'max_videos 必须在 1-200 之间'
+            }), 400
+
+        # 初始化爬虫，model_type 和 api_keys 通过构造器传入（不再修改全局变量）
+        crawler = BilibiliUpCrawler(uid, max_videos, model_type=model_type, api_keys=api_keys)
         
         # 获取视频列表
         print(f"正在获取UP主 {uid} 的视频列表...")
@@ -85,12 +81,7 @@ def extract_core_views():
         # 生成整体总结
         print("生成整体总结...")
         overall_summary = crawler.generate_overall_summary()
-        
-        # 恢复原始配置
-        MODEL_TYPE = original_model_type
-        DEEPSEEK_API_KEY = original_deepseek_key
-        SILICONFLOW_API_KEY = original_siliconflow_key
-        
+                
         # 返回结果
         return jsonify({
             'success': True,
