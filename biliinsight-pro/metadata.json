@@ -1,0 +1,5 @@
+{
+  "name": "BiliInsight Pro",
+  "description": "Professional Bilibili content analysis tool. Extract core viewpoints, summarize videos, and chat with AI about creator content.",
+  "requestFramePermissions": []
+}

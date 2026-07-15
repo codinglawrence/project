@@ -1,0 +1,31 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+*.egg
+
+# Node / Vite
+node_modules/
+dist/
+
+# Environment & Secrets
+.env.local
+.env.*.local
+*.pem
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+.DS_Store
+Desktop.ini
+
+# Project specific
+results/
+*.xlsx

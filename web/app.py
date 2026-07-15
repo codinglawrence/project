@@ -139,6 +139,47 @@ def ask_question():
             'message': f'回答问题失败：{str(e)}'
         }), 500
 
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    """智能问答接口"""
+    try:
+        data = request.json
+        context = data.get('context', '')
+        question = data.get('question', '')
+        
+        if not question:
+            return jsonify({
+                'success': False,
+                'message': '缺少问题参数'
+            }), 400
+        
+        # 初始化模型客户端
+        from main import BilibiliUpCrawler
+        crawler = BilibiliUpCrawler(0, 0)
+        
+        # 构建提示词
+        prompt = f"""基于以下UP主视频分析内容，回答用户的问题：
+
+{context}
+
+用户问题：{question}
+
+请基于上述分析内容，给出一个详细、准确的回答。"""
+        
+        # 调用模型生成回答
+        answer = crawler._call_model(prompt)
+        
+        return jsonify({
+            'success': True,
+            'answer': answer
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': f'聊天请求失败：{str(e)}'
+        }), 500
+
 @app.route('/api/test', methods=['GET'])
 def test():
     """测试接口"""
